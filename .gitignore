@@ -8,5 +8,6 @@
 /var/
 /vendor/
 /.env
+.env
 /DATA/
 ###< symfony/framework-bundle ###
