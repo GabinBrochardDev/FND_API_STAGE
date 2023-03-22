@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Controller;
+
+use App\Service\ApiKeyService;
 use App\Entity\Student;
 use App\Repository\StudentRepository;
 use Doctrine\ORM\EntityManager;
@@ -12,6 +14,7 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
+
 class ApiStudentController extends AbstractController
 {
     /**
@@ -21,9 +24,12 @@ class ApiStudentController extends AbstractController
      * methods={"GET"}
      * )
      */
-    public function index( StudentRepository $studentRepository, NormalizerInterface $normalizer ): JsonResponse
+    public function index( StudentRepository $studentRepository, NormalizerInterface $normalizer, ApiKeyService $apiKeyService, Request $request): JsonResponse
     {
-
+        $authorized = $apiKeyService->checkApiKey($request);
+        //dd($authorized);
+        if ($authorized)
+        {
         // Récupérer TOUS les étudiants
         $students = $studentRepository->findAll();
 
@@ -31,11 +37,11 @@ class ApiStudentController extends AbstractController
         $json = json_encode($students);
         // Ne va pas fonctionner car les attributs sont en private
         // Il faut normaliser!
-        
+
         // https://stackoverflow.com/questions/44286530/symfony-3-2-a-circular-reference-has-been-detected-configured-limit-1
         // $studentsNormalised = $normalizer->normalize($students);
         $studentsNormalised = $normalizer->normalize($students,'json',['circular_reference_handler' => function ($object) { return $object->getId(); } ]);
- 
+
         // dd($students);
         dd($students, $json, $studentsNormalised);
 
@@ -44,6 +50,12 @@ class ApiStudentController extends AbstractController
             'message' => 'Welcome to your new controller!',
             'path' => 'src/Controller/ApiStudentController.php',
         ]);
+    }
+        else
+        {
+            dd("API-KEY invalid");
+        }
+
     }
 
     /**

@@ -66,9 +66,9 @@ class ApiIntershipController extends AbstractController
         // Ici, les données ont été verifiées, on peut créer une nouvelle instance de Intership
         $intership = new Intership();
         // https://symfony.com/doc/current/doctrine.html#fetching-objects-from-the-database
-        $intership->setIdStudent( $entityManager->getRepository(Student::class)->find($dataFromRequest['id_Student_id']) );
-        $intership->setIdCompany( $entityManager->getRepository(Compagny::class)->find($dataFromRequest['idCompany_id']) );
-        $intership->setStartDate( new DateTime($dataFromRequest['SartDate']) );
+        $intership->setIdStudent( $entityManager->getRepository(Student::class)->find($dataFromRequest['student_id']) );
+        $intership->setIdCompany( $entityManager->getRepository(Compagny::class)->find($dataFromRequest['company_id']) );
+        $intership->setStartDate( new DateTime($dataFromRequest['start_date']) );
         $intership->setEndDate( new DateTime($dataFromRequest['end_date']) );
 
         // insertion en base de l'instance student
